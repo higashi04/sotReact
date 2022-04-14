@@ -8,6 +8,9 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 //pages
 import HumanResourcesHome from './pages/hr/home'
 import UsersHome from './pages/users/home'
+import InvHome from './pages/inv/home';
+import MttoHome from './pages/mtto/home';
+import ComprasHome from './pages/compras/home';
 
 function App() {
   return (
@@ -15,7 +18,10 @@ function App() {
       <Navbar/>
       <Routes>
         <Route path='/' element={<Body />}>
-          <Route path='/hr' element={<HumanResourcesHome />} />
+          <Route path='hr' element={<HumanResourcesHome />} />
+          <Route path='inv' element={<InvHome/>} />
+          <Route path='mtto' element={<MttoHome/>} />
+          <Route path='compras' element={<ComprasHome/>} />
         </Route>
         
         <Route path='users' element={<UsersHome />} />
