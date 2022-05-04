@@ -4,7 +4,7 @@ import { Link } from "react-router-dom"
 
 const ComprasHome = ()=> {
     return(
-        <div className="body py-5">
+        <div className="body py-5 my-5">
             <Title title='Compras'/>
             <div className="container my-5">
             <div className="row">

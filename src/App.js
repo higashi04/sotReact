@@ -15,9 +15,9 @@ import ComprasHome from './pages/compras/home';
 function App() {
   return (
     <div>
-      <Navbar/>
       <Routes>
-        <Route path='/' element={<Body />}>
+        <Route path='/' element={<Navbar/>}>
+          <Route index element={<Body />} />
           <Route path='hr' element={<HumanResourcesHome />} />
           <Route path='inv' element={<InvHome/>} />
           <Route path='mtto' element={<MttoHome/>} />
