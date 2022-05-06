@@ -18,5 +18,7 @@ route.get('/users/:id', (req, res) => {
         res.json(result)
     })
 })
-
+route.post('/login', (req, res) => {
+    console.log('hi')
+})
 module.exports = route

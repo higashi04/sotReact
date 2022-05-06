@@ -11,6 +11,7 @@ import UsersHome from './pages/users/home'
 import InvHome from './pages/inv/home';
 import MttoHome from './pages/mtto/home';
 import ComprasHome from './pages/compras/home';
+import Login from './pages/users/login';
 
 function App() {
 
@@ -23,9 +24,13 @@ function App() {
           <Route path='inv' element={<InvHome/>} />
           <Route path='mtto' element={<MttoHome/>} />
           <Route path='compras' element={<ComprasHome/>} />
+          <Route path='login' element={<Login/>}/>
+          <Route path='users' element={<UsersHome />}>
+            
+          </Route>
         </Route>
         
-        <Route path='users' element={<UsersHome />} />
+  
       </Routes>
       <Footer/>
     </div>

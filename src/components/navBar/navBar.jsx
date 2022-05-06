@@ -4,10 +4,11 @@ import './navBar.css'
 
 import { Link, Outlet } from "react-router-dom";
 
+
 class Navbar extends React.Component {
     render() {
         return(
-            <div>
+            <div className="mb-5">
                 <nav className="navbar navbar-expand-lg navbar-light bg-light fixed-top mb-5">
                     <div className="container-fluid">
                         <Link className="navbar-brand stupidAnchor" to="/"> <img src={logo} className='logo' alt="" /> </Link>
@@ -22,7 +23,7 @@ class Navbar extends React.Component {
                                 <span className="nav-link">text</span>
                             </div>
                             <div className="ms-auto navbar-nav">
-                                lorem
+                                <Link className="btn btn-success" to={'/login'}>Iniciar Sesión</Link>
                             </div>
                         </div>
                     </div>
