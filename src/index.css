@@ -6,10 +6,7 @@
   --fourthly-color: #4D4D4D;
 }
 
-.body{
- background: var(--main-color2);
- height: 100vh;
-}
+
 .text-footer {
   color: white;
 }

@@ -3,6 +3,9 @@ const app = express()
 const cors = require('cors')
 require("dotenv").config({ path: "./config.env" });
 const port = process.env.PORT || 8085;
+
+const busesRoutes = require('./routes/buses')
+
 app.use(cors())
 app.use(express.json())
 app.use(require("./routes/users"));
@@ -20,4 +23,13 @@ app.listen(port, () => {
 
 app.get('/', (req, res) => {
   res.send('online')
+})
+app.get('/buses', async(req, res) => {
+  let db_connect = dbo.getDb('trasn-vill')
+  db_connect.collection('buses').find({}).toArray((err, result) => {
+      if(err) throw err;
+      res.json(result)
+  })
+  // const buses = await busSchema.find({})
+  // res.send('your data' ,{buses})
 })

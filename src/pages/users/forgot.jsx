@@ -2,7 +2,7 @@ import React from "react";
 
 export default function Forgot() {
     return(
-        <div className="body mt-5">
+        <div className="mt-5">
             <br />
             <div className="container mt-5">
                 <h2 className="mt*5">Proporcione su dirección de email:</h2>
