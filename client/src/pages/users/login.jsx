@@ -1,18 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 
 export default function Login() {
+
+    const [username, setUsername] = useState('')
+    const [password, setPassword] = useState('')
+
     return(
         <div className="body my-5">
             <br />
             <h1 className="mx-3 mt-5">Inicio de Sesión</h1>
             <div className="mb-3 container">
-            <form action ="http://localhost:8085/login" method="POST">
+            <form action ="http://localhost:8085/users/login" method="POST">
                 <div className="form-floating col-6 pb-2">
-                    <input type="text" className="form-control form-control-lg" name="username" id="floatingUsername" placeholder="Usuario:" required/>
+                    <input type="text" className="form-control form-control-lg" name="username" id="floatingUsername" placeholder="Usuario:" value={username} onChange={e => setUsername(e.target.value)} required/>
                     <label htmlFor="floatingUsername" className="form-label">Usuario: </label>
                 </div>
                 <div className="form-floating col-6 pb-2">
-                    <input type="password" className="form-control form-control-lg" name="password" id="floatingPassword" placeholder="Contraseña:" required/>
+                    <input type="password" className="form-control form-control-lg" name="password" id="floatingPassword" placeholder="Contraseña:" value={password} onChange={e=>setPassword(e.target.value)} required/>
                     <label htmlFor="floatingPassword" className="form-label">Contraseña: </label>
                     <span className="pass-toggle">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-eye-fill" id="eye-toggle" viewBox="0 0 16 16">

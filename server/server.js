@@ -4,29 +4,57 @@ const cors = require('cors')
 const session = require('express-session');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
-const mongoose = require('mongoose')
-require("dotenv").config({ path: "./config.env" });
+const mongoose = require('mongoose');
+const MongoStore = require('connect-mongo');
+const flash = require('connect-flash');
+require("dotenv").config();
+require('./utils/jwtstrat')
+require('./auth')
 
 const Users = require('./models/users')
 
 const port = process.env.PORT || 8085;
+const dbUrl = process.env.DB_URL
+const secret = process.env.SECRET
 
 const busesRoutes = require('./routes/buses')
-const usersRoutes = require('./routes/users')
-
+const usersRoutes = require('./routes/users');
 
 app.use(cors())
 app.use(express.json())
 // app.use(require("./routes/users"));
 // get driver connection
 
+const store = MongoStore.create({
+  mongoUrl: dbUrl,
+  touchAfter: 24 * 3600,
+  crypto: {
+      secret: process.env.SECRET,
+  }
+});
+
+store.on('error', (e)=>{
+  console.log(e)
+})
+
+// app.use((req, res, next) =>{
+//   if(!['/login','/logout','/register', '/'].includes(req.originalUrl)) {
+//       req.session.returnTo = req.originalUrl
+//   }
+//   res.locals.currentUser = req.user;
+//   res.locals.success = req.flash('success');
+//   res.locals.error = req.flash('error');
+//   res.locals.originalUrl = req.originalUrl
+//   res.locals.domain = req.headers.host
+//   next();
+// });
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json())
 const sessionConfig = {
-  // store: store,
+  store: store,
   name: 'makalaniaTemple',
-  secret: 'secretNotSoMuch',
+  secret: secret,
   resave: false,
   saveUninitialized: true,
   cookie: {
@@ -37,6 +65,7 @@ const sessionConfig = {
   }
 }
 app.use(session(sessionConfig));
+app.use(flash());
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -61,13 +90,4 @@ app.listen(port, () => {
 
 app.get('/', (req, res) => {
   res.send('online')
-})
-app.get('/buses', async(req, res) => {
-  // let db_connect = dbo.getDb('trasn-vill')
-  // db_connect.collection('buses').find({}).toArray((err, result) => {
-  //     if(err) throw err;
-  //     res.json(result)
-  // })
-  // const buses = await busSchema.find({})
-  // res.send('your data' ,{buses})
 })

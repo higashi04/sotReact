@@ -2,6 +2,15 @@ const mongoose = require('mongoose');
 const passportLocalMongoose = require('passport-local-mongoose');
 const Schema = mongoose.Schema;
 
+
+
+const session = new Schema({
+    refreshToken: {
+        type: String,
+        default: ''
+    }
+})
+
 const UserSchema = new Schema({
     email: {
         type: String,
@@ -33,7 +42,18 @@ const UserSchema = new Schema({
     },
     employeeNumber: Number,
     resetPasswordToken: String,
-    resetPasswordExpires: Date
+    resetPasswordExpires: Date,
+    authStrategy: {
+        type: String,
+        default: 'local'
+    },
+    points: {
+        type: Number,
+        default: 50
+    },
+    refreshToken: {
+        type: [session]
+    }
 });
 
 UserSchema.virtual('fullname').get(function(){
@@ -41,6 +61,12 @@ UserSchema.virtual('fullname').get(function(){
     return fullname
 })
 
+UserSchema.set('toJSON', {
+    transform: function(doc, ret, options) {
+        delete ret.refreshToken
+        return ret
+    }
+})
 
 UserSchema.plugin(passportLocalMongoose);
 module.exports = mongoose.model('User', UserSchema);

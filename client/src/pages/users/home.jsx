@@ -21,7 +21,7 @@ const UsersHome = () =>{
                         <AnchorBtn name={'Crear Usuario'} url='new' />
                     </div>
                     <div className="col-4">
-                        <Link className="btn btn-dark" to={'new'}>Nuevo</Link>
+                        
                     </div>
                 </div>
             </div>

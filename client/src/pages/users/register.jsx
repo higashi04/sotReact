@@ -72,7 +72,7 @@ const Register = () => {
                             <div className="form-floating col-6 pb-2">
                                 <select className="form-select form-select-sm mb-3" aria-label=".form-select-lg example" id="floatingPuesto" name="puesto">
                                     {puesto.map((i) => {
-                                        return <option key={Math.floor(Math.random() * 1000) + 1} value={i}>{i}</option>
+                                        return <option key={Math.floor(Math.random() * 1000) + Math.floor(Math.random() * 1000)} value={i}>{i}</option>
                                     })}
                                 </select>
                                 <label htmlFor="floatingPuesto" className="form-label">Puesto: </label>

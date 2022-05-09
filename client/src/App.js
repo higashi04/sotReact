@@ -17,6 +17,7 @@ import ComprasHome from './pages/compras/home';
 import Login from './pages/users/login';
 import Forgot from './pages/users/forgot';
 import Register from './pages/users/register';
+import NoMatch from './pages/NoMatch404';
 
 function App() {
 
@@ -32,11 +33,11 @@ function App() {
           <Route path='compras' element={<ComprasHome/>} />
           <Route path='login' element={<Login/>}/>
           <Route path='forgot' element={<Forgot/>} />
-          <Route path='users' element={<UsersHome />}>
-            <Route path='new' element={<Register />}/>
-          </Route>
+          <Route path='users' element={<UsersHome />}/>
+          <Route path='users/new' element={<Register />}/>
 
           <Route path='show' element={<BusShow/>}/>
+          <Route path='*' element={<NoMatch/>} />
         </Route>
         
   
