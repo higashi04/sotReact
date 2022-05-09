@@ -16,6 +16,7 @@ import BusShow from './pages/buses/show';
 import ComprasHome from './pages/compras/home';
 import Login from './pages/users/login';
 import Forgot from './pages/users/forgot';
+import Register from './pages/users/register';
 
 function App() {
 
@@ -32,7 +33,7 @@ function App() {
           <Route path='login' element={<Login/>}/>
           <Route path='forgot' element={<Forgot/>} />
           <Route path='users' element={<UsersHome />}>
-            
+            <Route path='new' element={<Register />}/>
           </Route>
 
           <Route path='show' element={<BusShow/>}/>

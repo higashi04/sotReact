@@ -12,9 +12,9 @@ const BusShow = () => {
         })
     }
     useEffect(() => {
-       
+        fetchBuses()
     })
-    fetchBuses()
+    
     return(
         <div></div>
     )
