@@ -21,7 +21,21 @@ const secret = process.env.SECRET
 const busesRoutes = require('./routes/buses')
 const usersRoutes = require('./routes/users');
 
-app.use(cors())
+const whitelist = process.env.DOMAINS ?
+  process.env.DOMAINS.split(',') : []
+
+const corsOpts = {
+  origin: function(origin, callback) {
+    if(!origin || whitelist.indexOf(origin !== -1)) {
+      callback(null, true)
+    } else {
+      callback(new Error('Sitio Bloqueado'))
+    }
+  },
+  credentials: true
+}
+
+app.use(cors(corsOpts))
 app.use(express.json())
 app.use(cookieParser(process.env.SECRET))
 // app.use(require("./routes/users"));

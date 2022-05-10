@@ -32,7 +32,7 @@ router.post('/register', async(req, res)=>{
                       res.send(err)
                     } else {
                       res.cookie("refreshToken", refreshToken, COOKIE_OPTIONS)
-                      res.redirect('http://localhost:3000',{ success: true, token })
+                      res.send({success: true, token})
                     }
                   })
                 }
@@ -59,7 +59,7 @@ router.post('/login', passport.authenticate('local'), (req, res, next) => {
                     res.send(err)
                 } else {
                     res.cookie('refreshToken', refreshToken, COOKIE_OPTIONS)
-                    res.redirect('http://localhost:3000', {success: true, token})
+                    res.send({success: true, token})
                 }
             })
         },
