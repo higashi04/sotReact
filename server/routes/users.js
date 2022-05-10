@@ -1,89 +1,146 @@
 const express = require('express')
 const router = express.Router()
 const passport = require('passport')
-const dbo = require('../db/conn')
-const ObjectId = require('mongodb').ObjectId
+const jwt = require('jsonwebtoken')
 const User = require('../models/users')
 
-const {getToken, getRefreshToken, COOKIE_OPTIONS} = require('../auth')
-const _ = require('passport-local-mongoose')
-
-router.get('/users', (req, res) => {
-    // let db_connect = dbo.getDb('trasn-vill')
-    // db_connect.collection('users').find({}).toArray((err, result) => {
-    //     if(err) throw err;
-    //     res.json(result)
-    // })
-})
-router.get('/users/:id', (req, res) => {
-    // let db_connect = dbo.getDb()
-    // let query = {_id: ObjectId(req.params.id)};
-    // db_connect.collection('users').findOne(query, (err, result) => {
-    //     if (err) throw err;
-    //     res.json(result)
-    // })
-})
+const { getToken, COOKIE_OPTIONS, getRefreshToken, verifyUser } = require("../auth")
 
 router.post('/register', async(req, res)=>{
     try{
-        const { email, username, password, firstName, lastName, puesto } = req.body;
-        const user = new User({ email, username, firstName, lastName, puesto });
-        await User.register(user, password);
+        if (req.body.firstName === undefined) {
+            res.statusCode = 500
+            res.send({
+              name: "FirstNameError",
+              message: "Es necesario registrar el primer nombre.",
+            })
+          } else {
+            User.register(
+              new User({ email: req.body.email, username: req.body.username, firstName: req.body.firstName, lastName: req.body.lastName, puesto: req.body.puesto }),
+              req.body.password,
+              (err, user) => {
+                if (err) {
+                  res.statusCode = 500
+                  res.send(err)
+                } else {
+                  const token = getToken({ _id: user._id })
+                  const refreshToken = getRefreshToken({ _id: user._id })
+                  user.refreshToken.push({ refreshToken })
+                  user.save((err, user) => {
+                    if (err) {
+                      res.statusCode = 500
+                      res.send(err)
+                    } else {
+                      res.cookie("refreshToken", refreshToken, COOKIE_OPTIONS)
+                      res.redirect('http://localhost:3000',{ success: true, token })
+                    }
+                  })
+                }
+              }
+            )
+        }
         // req.flash('success', 'éxito')
-        res.redirect('http://localhost:3000')
-        console.log(User)
     }catch(e){
         // req.flash('error', 'Se produjo un problema al registrar al usuario')
         console.log(e)
    }
 });
 
-router.post('/login', passport.authenticate('local', {failureFlash: true, failureRedirect: '/'}), (req, res) => {
-    // req.flash('success', 'Bienvenido.');
-    console.log(req.body)
-    res.redirect('http://localhost:3000')
+
+router.post('/login', passport.authenticate('local'), (req, res, next) => {
+    const token = getToken({_id: req.user._id})
+    const refreshToken = getRefreshToken({_id: req.user._id})
+    User.findById(req.user._id).then(
+        user => {
+            user.refreshToken.push({refreshToken})
+            user.save((err, user) => {
+                if (err) {
+                    res.statusCode = 500
+                    res.send(err)
+                } else {
+                    res.cookie('refreshToken', refreshToken, COOKIE_OPTIONS)
+                    res.redirect('http://localhost:3000', {success: true, token})
+                }
+            })
+        },
+        err => next(err)
+    )  
 })
 
+router.post('/refreshToken', (req, res, next) => {
+    const { signedCookies = {} } = req
+    const { refreshToken } = signedCookies
+
+    if (refreshToken) {
+        try {
+            const payload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET)
+            const userId = payload._id
+            User.findOne({_id: userId}).then(
+                user => {
+                    if (user) {
+                        const tokenIndex = user.refreshToken.findIndex(
+                            item => item.refreshToken === refreshToken
+                        )
+                        if (tokenIndex === -1) {
+                            res.statusCode = 401
+                            res.send('Sin Autorización')
+                        } else {
+                            const token = getToken({ _id: userId})
+                            const newRefreshToken = getRefreshToken({ _id: userId})
+                            user.refreshToken[tokenIndex] = {refreshToken: newRefreshToken}
+                            user.save((err, user) => {
+                                if (err) {
+                                    res.statusCode = 500
+                                    res.send(err)
+                                } else {
+                                    res.cookie('refreshToken', newRefreshToken, COOKIE_OPTIONS)
+                                    res.send({success: true, token})
+                                }
+                            })
+                        }
+                    } else {
+                        res.statusCode = 401
+                        res.send('Sin Autorización')
+                    }
+                }, 
+                err => next(err)
+            )
+        } catch (e) {
+            res.statusCode = 401
+            res.send('Sin Autorización')
+        }
+    } else {
+        res.statusCode = 401
+        res.send('Sin Autorización')
+    }
+})
+
+router.get('/me', verifyUser, (req, res) => {
+    res.send(req.user)
+})
+
+router.get('/logout', verifyUser, (req, res, next) => {
+    const { signedCookies = {}} = req
+    const { refreshToken } = signedCookies
+    User.findById(req.user._id).then(
+        user => {
+            const tokenIndex = user.refreshToken.findIndex(
+                item => item.refreshToken === refreshToken
+            )
+            if (token === -1) {
+                user.refreshToken.id(user.refreshToken[tokenIndex]._id).remove()
+            }
+            user.save((err, user) => {
+                if (err) {
+                    res.statusCode = 500
+                    res.send(err)
+                } else {
+                    res.clearCookie('refreshToken', COOKIE_OPTIONS)
+                    res.send({success: true})
+                }
+            })
+        },
+        err => next(err)
+    )
+})
 module.exports = router
-
-
-// route.post('/register', async(req, res)=>{
-//     try{
-//         if (!req.body.firstName) {
-//             // res.statusCode = 500
-//             // res.send({
-//             //     name: 'Error en nombre',
-//             //     message: 'Es necesario registrar el primer nombre.'
-//             // })
-//         } else {
-//             User.register(
-//             new User({ email: req.body.email, username: req.body.username, firstName: req.body.firstName, lastName: req.body.lastName, puesto: req.body.puesto }),
-//             req.body.password,
-//             (err, user) => {
-//                 if (err) {
-//                     // res.statusCode = 500
-//                     // res.send(err)
-//                 } else {
-//                     const token = getToken({_id: user._id})
-//                     const refreshToken = getRefreshToken({_id: user._id})
-//                     user.refreshToken.push({ refreshToken })
-//                     user.save((err, user) => {
-//                         if(err) {
-//                             // res.statusCode = 500
-//                             // res.send(err)
-//                         } else {
-//                             res.cookie('refreshToken', refreshToken, COOKIE_OPTIONS)
-//                             res.send({ succes: true, token })
-//                         }
-//                     })
-//                 }
-//             })
-//         }
-
-//         // req.flash('success', 'éxito')
-//         res.redirect('http://localhost:3000')
-//     }catch(e){
-//         // req.flash('error', 'Se produjo un problema al registrar al usuario')
-//         console.log(e)
-//    }
-//});

@@ -1,16 +1,6 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import bg from '../../assets/272707556_231916139148938_3564323865832014711_n-removebg-small.png'
 
-// function Puestos () {
-
-
-//     return (
-//         <div>
-            
-//         </div>
-//     )
-// }
 
 const Register = () => {
     const url = 'http://localhost:8085/'
@@ -30,15 +20,17 @@ const Register = () => {
         'Analista de Procesos',
         'Ejecutivo de Compras',
     ]
+    
 
     return(
         <div className="mt-5">
-            <br />
-            <h1 className="m-3">Registro de Usuarios</h1>
+            <br className="mt-5"/>
+            <br className="mt-5"/>
+            <h1 className="my-3 offset-md-4">Registro de Usuarios</h1>
             <div className="mb-3 container">
                 <div className="row bg">
                     <div className="col-7 bg-img">
-                        <img className="bg-logo" src={bg} alt="image" />
+                        <img className="bg-logo" src={bg} alt="bus shaped logo" />
                     </div>
                     <div className="col-5 my-3">
                         <h4>Registre sus datos</h4>
@@ -72,7 +64,7 @@ const Register = () => {
                             <div className="form-floating col-6 pb-2">
                                 <select className="form-select form-select-sm mb-3" aria-label=".form-select-lg example" id="floatingPuesto" name="puesto">
                                     {puesto.map((i) => {
-                                        return <option key={Math.floor(Math.random() * 1000) + Math.floor(Math.random() * 1000)} value={i}>{i}</option>
+                                        return <option key={i} value={i}>{i}</option>
                                     })}
                                 </select>
                                 <label htmlFor="floatingPuesto" className="form-label">Puesto: </label>

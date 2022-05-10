@@ -7,6 +7,7 @@ const LocalStrategy = require('passport-local');
 const mongoose = require('mongoose');
 const MongoStore = require('connect-mongo');
 const flash = require('connect-flash');
+const cookieParser = require('cookie-parser');
 require("dotenv").config();
 require('./utils/jwtstrat')
 require('./auth')
@@ -22,6 +23,7 @@ const usersRoutes = require('./routes/users');
 
 app.use(cors())
 app.use(express.json())
+app.use(cookieParser(process.env.SECRET))
 // app.use(require("./routes/users"));
 // get driver connection
 
